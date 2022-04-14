@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import database from "../../firebase";
 import { doc, getDoc, query, onSnapshot, collection, where } from "firebase/firestore";
 import PropTypes from "prop-types"
+import usePersistedState from '../../custom/PersistedState';
 
 function PostCard(props) {
 	const [data, setData] = useState({});
@@ -22,7 +23,7 @@ function PostCard(props) {
 				<div className="flex items-center justify-between"><span className="font-light text-gray-600">Jun 1, 2020</span><a href="#"
 						className="px-2 py-1 font-bold text-gray-100 bg-gray-600 rounded hover:bg-gray-500">Laravel</a>
 				</div>
-				<div className="mt-2"><a href="#" className="text-2xl font-bold text-gray-700 hover:underline">{props.title}</a>
+				<div className="mt-2"><a href={"/editor/" + props.uuid} className="text-2xl font-bold text-gray-700 hover:underline">{props.title}</a>
 					<div className="mt-2 prose text-gray-600">{props.desc}</div>
 				</div>
 				<div className="flex items-center justify-between mt-4"><a href="#"
@@ -41,20 +42,33 @@ PostCard.propTypes = {
 	title: PropTypes.string.isRequired,
 	desc: PropTypes.string.isRequired,
 	author: PropTypes.string.isRequired,
-	name: PropTypes.string,
+	uuid: PropTypes.string.isRequired,
 }
 
 function Posts() {
 	const [posts, setPosts] = useState([]);
+	const [userLoggedIn, setUserLoggedIn] = usePersistedState("user", {});
 
 	useEffect(() => {
-		const q = query(collection(database, 'posts'), where('visibility', '==', "public"));
-        onSnapshot(q, (querySnapshot) => {
-			setPosts(querySnapshot.docs.map(doc => ({
-				id: doc.id,
-				data: doc.data()
-			})))
-		})
+		async function fetchUserDataAndPosts() {
+			var userRole = "default";
+			if (typeof userLoggedIn.uid != "undefined") {
+				const data = (await getDoc(doc(database, 'users', userLoggedIn.uid))).data();
+				userRole = data.role;
+			}
+			var whereData = where('visibility', '==', "public"); // Default value if signed out
+			if (userRole == "user") whereData = where('visibility', "in", ["public", "restricted"]);
+			if (userRole == "admin") whereData = where('visibility', "in", ["public", "restricted", "private"]);
+			console.log(whereData)
+			const q = query(collection(database, 'posts'), whereData);
+			onSnapshot(q, (querySnapshot) => {
+				setPosts(querySnapshot.docs.map(doc => ({
+					id: doc.id,
+					data: doc.data()
+				})))
+			})
+		}
+		fetchUserDataAndPosts();
     }, []);
 
 	return (
@@ -67,6 +81,7 @@ function Posts() {
 					desc={post.data.description}
 					title={post.data.title}
 					author={post.data.author}
+					uuid={post.data.uuid}
 				/>
 				)
 			})}

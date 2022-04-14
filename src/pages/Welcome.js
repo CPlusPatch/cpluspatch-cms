@@ -5,7 +5,7 @@ import Posts from "../components/welcome/Posts.js";
 import usePersistedState from "../custom/PersistedState";
 import database, { auth } from "../firebase";
 import { signOut } from "@firebase/auth";
-import PostEditor from "./editor/PostEditor";
+import PostCreator from "./editor/PostCreator";
 
 function Welcome() {
 	const [userLoggedIn, setUserLoggedIn] = usePersistedState("user", {});
@@ -50,7 +50,7 @@ function Welcome() {
 				</div>
 			</div>
 			<Footer/>
-			<PostEditor />
+			<PostCreator />
 			<CreatePostButton />
 		</div>
 	);

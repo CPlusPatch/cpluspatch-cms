@@ -3,7 +3,7 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-	apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+	apiKey: "AIzaSyAevlqkJ7t1R3LqKils11xANovT6WYNPpw",
 	authDomain: "cpluspatch-cms.firebaseapp.com",
 	projectId: "cpluspatch-cms",
 	storageBucket: "cpluspatch-cms.appspot.com",
