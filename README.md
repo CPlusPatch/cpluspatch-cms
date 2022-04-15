@@ -23,6 +23,8 @@
 </p>
 
 ![screenshot](https://i.imgur.com/rIhxh7W.png)
+![screenshot](https://i.imgur.com/qzrxj6L.png)
+![screenshot](https://i.imgur.com/lMb5vND.png)
 
 ## Key Features
 
