@@ -11,6 +11,8 @@ import CodeTool from "@editorjs/code";
 import EditorNavbar from "./EditorNavbar";
 import usePersistedState from "../../custom/PersistedState";
 import EditorSettingsModal from "../../components/editor/modals/EditorSettingsModal";
+import slugify from 'slugify';
+
 
 function PostEditor() {
 	const { uuid } = useParams();
@@ -40,8 +42,10 @@ function PostEditor() {
 	}
 
 	const handleTitleChange = async (e) => {
+		const slug = (Math.floor(Math.random() * (9999999999 - 1000000000 + 1)) + 1000000000).toString() + "-" + slugify(e.target.value).toLowerCase();
 		await setDoc(doc(collection(database, 'posts'), postData.id), {
 			title: e.target.value,
+			slug: slug,
 		}, { merge: true });
 	}
 
