@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { collection, query, where, getDocs, doc, setDoc, getDoc } from "firebase/firestore";
 import database from "../../firebase";
 import EditorJS from '@editorjs/editorjs';
-import List from '@editorjs/list'
+import List from '@editorjs/list';
 import Image from '@editorjs/image'
 import Header from '@editorjs/header'
 import Delimiter from '@editorjs/delimiter'

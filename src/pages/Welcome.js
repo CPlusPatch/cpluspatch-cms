@@ -12,27 +12,22 @@ function Welcome() {
 	const [userLoggedIn, setUserLoggedIn] = usePersistedState("user", {});
 
 	return (
-		<div className="h-full bg-gray-100 app font-roboto">
-			<AppNavbar/>
-			<div className="px-6 py-8">
-				<div className="container flex justify-between mx-auto">
-					<div className="w-full lg:w-8/12">
-						<div className="flex items-center justify-between">
-							<h1 className="text-xl font-bold text-gray-700 md:text-2xl">Post</h1>
-							<div>
-								<select className="block px-2 py-2 text-gray-700 bg-gray-300 rounded-lg focus:outline-none md:py-3">
-									<option>Latest</option>
-									<option>Last Week</option>
-								</select>
-							</div>
+		<div className="px-4 mx-5 sm:px-6 xl:px-0 md:mx-48">
+			<div className="flex flex-col justify-between h-screen">
+				<AppNavbar/>
+				<main className="mb-auto">
+					<div className="divide-y divide-gray-200 dark:divide-gray-700">
+						<div className="pt-6 pb-8 space-y-2 md:space-y-5">
+							<h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
+								Latest</h1>
+							<p className="text-lg leading-7 text-gray-500 dark:text-gray-400">The latest (and worst) of my shitposts</p>
 						</div>
-						{JSON.stringify(userLoggedIn) == "{}" ? null : <PostCreator />}
 						<Posts />
+						{JSON.stringify(userLoggedIn) == "{}" ? null : <PostCreator />}
 					</div>
-					<Sidebar />
-				</div>
+				<Footer/>
+				</main>
 			</div>
-			<Footer/>
 		</div>
 	);
 }
