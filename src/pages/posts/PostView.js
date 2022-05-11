@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { collection, query, where, getDocs, doc, setDoc, getDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
 import database from "../../firebase";
 import usePersistedState from "../../custom/PersistedState";
 import Blocks from 'editorjs-blocks-react-renderer';
@@ -9,11 +9,6 @@ import AppNavbar from "../../components/nav/AppNavbar";
 
 function PostView() {
 	const { slug } = useParams();
-	const [userData, setUserData] = useState({
-		name: "Loading...",
-		role: "Loading...",
-		avatar: "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y",
-	});
 	const [userLoggedIn, setUserLoggedIn] = usePersistedState("user", {});
 	const [postData, setPostData] = useState({
 		id: "",
@@ -28,22 +23,13 @@ function PostView() {
 	
 	useEffect(() => {
 		async function fetchPostData() {
-			const q = query(collection(database, "posts"), where("slug", "==", slug));
+			const q = query(collection(database, "posts"), where("visibility", "==", "public"), where("slug", "==", slug));
 			const querySnapshot = await getDocs(q);
 			await querySnapshot.forEach((doc) => {
 				setPostData({id: doc.id, data: doc.data()});
 			});
 		}
 		fetchPostData();
-		async function fetchUserData() {
-			const data = (await getDoc(doc(database, 'users', userLoggedIn.uid))).data();
-			setUserData({
-				role: data.role,
-				name: data.name,
-				avatar: data.avatar
-			});
-		}
-		fetchUserData();
 	}, []);
 
 	return (
