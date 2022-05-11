@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { collection, query, where, getDocs, doc, setDoc, getDoc } from "firebase/firestore";
-import database from "../../firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import database, { storage } from "../../firebase";
 import EditorJS from '@editorjs/editorjs';
 import List from '@editorjs/list';
 import Image from '@editorjs/image'
@@ -11,6 +12,8 @@ import CodeTool from "@editorjs/code";
 import EditorNavbar from "./EditorNavbar";
 import usePersistedState from "../../custom/PersistedState";
 import EditorSettingsModal from "../../components/editor/modals/EditorSettingsModal";
+import Undo from 'editorjs-undo';
+import DragDrop from "editorjs-drag-drop";
 import slugify from 'slugify';
 
 
@@ -77,20 +80,46 @@ function PostEditor() {
 			await querySnapshot.forEach((doc) => {
 				editorId = doc.id;
 				setPostData({id: doc.id, data: doc.data()});
-				new EditorJS({
+				let editor = new EditorJS({
 					holder: 'editor',
 					tools: {
 						list: {
 							class: List,
 							inlineToolbar: true
 						},
-						image: Image,
+						image: {
+							class: Image,
+							config: {
+								uploader: {
+									uploadByFile(file){
+										const storageRef = ref(storage, "uploads/" + file.name + "-" + Date.now());
+										// 'file' comes from the Blob or File API
+										return uploadBytes(storageRef, file).then(async (snapshot) => {
+											return {
+												success: 1,
+												file: {
+													url: await getDownloadURL(snapshot.ref),
+												}
+											};
+										});
+									},
+							
+									uploadByUrl(url){
+										// no
+									}
+								}
+							}
+						},
 						header: Header,
 						delimiter: Delimiter,
 						code: CodeTool
 					},
 					data: JSON.parse(doc.data().blocks),
 					onChange: handleChange,
+					onReady: () => {
+						new Undo({ editor });
+						new DragDrop(editor);
+					},
 				});
 			});
 		}
