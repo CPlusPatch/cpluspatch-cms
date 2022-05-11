@@ -10,7 +10,7 @@ service cloud.firestore {
       }
       allow write: if isLoggedIn();
       allow update, delete: if isLoggedIn() && (resource.data.author == request.auth.uid);
-      allow read: if (resource.data.visibility == "public" || (isLoggedIn() && resource.data.visibility == "restricted") || hasRole("admin"))
+      allow read: if resource.data.visibility == "public" || (isLoggedIn() && resource.data.visibility == "restricted") || hasRole("admin");
     }
     match /users/{user} {
     	function isLoggedIn(){
