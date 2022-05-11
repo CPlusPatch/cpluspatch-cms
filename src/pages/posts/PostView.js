@@ -47,22 +47,24 @@ function PostView() {
 	}, []);
 
 	return (
-		<>
-			<AppNavbar/>
-			<div className="flex justify-center w-full h-full">
-				<style>{"\
-					.prose :where(img):not(:where([class~=\"not-prose\"] *)) {\
-						margin-top: 0;\
-						margin-bottom: 0;\
-					}\
-				"}</style>
-				<div className="w-full h-full prose md:px-0 md:w-11/12 lg:w-9/12 xl:w-7/12 2xl:w-6/12 max-w-none">
-					<div className="w-full h-full px-4">
-						<Blocks data={JSON.parse(postData.data.blocks)} />
+		<div className="px-4 mx-5 sm:px-6 xl:px-0 md:mx-48">
+			<div className="flex flex-col justify-between h-screen">
+				<AppNavbar/>
+				<div className="flex justify-center w-full h-full">
+					<style>{"\
+						.prose :where(img):not(:where([class~=\"not-prose\"] *)) {\
+							margin-top: 0;\
+							margin-bottom: 0;\
+						}\
+					"}</style>
+					<div className="w-full h-full prose md:px-0 md:w-11/12 lg:w-9/12 xl:w-7/12 2xl:w-6/12 max-w-none">
+						<div className="w-full h-full px-4">
+							<Blocks data={JSON.parse(postData.data.blocks)} />
+						</div>
 					</div>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 }
 
