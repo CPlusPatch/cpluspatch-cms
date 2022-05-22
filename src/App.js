@@ -6,12 +6,14 @@ import PostEditor from "./pages/blog/editor/PostEditor";
 import PostView from "./pages/blog/posts/PostView";
 import FrontPage from './pages/welcome/FrontPage';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Error404 from './pages/error-404';
 
 function App() {
 	if (window.location.host.split(".")[0] == "blog") {
 		return (
 			<BrowserRouter>
 				<Routes>
+				<Route path="*" element={<Error404 />} />
 					<Route path="/">
 						<Route index element={<Welcome />} />
 						<Route path="login" element={<LoginPage/>} />
@@ -25,6 +27,7 @@ function App() {
 		return (
 			<BrowserRouter>
 				<Routes>
+				<Route path="*" element={<Error404 />} />
 					<Route path="/">
 						<Route index element={<FrontPage />} />
 					</Route>

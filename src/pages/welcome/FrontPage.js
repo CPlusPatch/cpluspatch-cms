@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import "https://unpkg.com/typewriter-effect@latest/dist/core.js";
+import Typewriter from 'typewriter-effect/dist/core';
 import ProjectCard from "./ProjectCard";
 
 export default function FrontPage() {
