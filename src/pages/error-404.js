@@ -5,7 +5,7 @@ import { MailOpenIcon, BookOpenIcon, RssIcon, ViewListIcon } from '@heroicons/re
 export default function Error404() {
 	const links = [
 		{ title: 'Main Page', description: 'Check out CPlusPatch and his stuff there', icon: BookOpenIcon, href: '/' },
-		{ title: 'Blog', description: 'My experimental CMS system is here', icon: RssIcon, href: 'blog.cpluspatch.com' },
+		{ title: 'Blog', description: 'My experimental CMS system is here', icon: RssIcon, href: '/blog' },
 		{ title: 'Contact', description: 'How to contact me', icon: MailOpenIcon, href: "/contact" },
 	]
 	return (

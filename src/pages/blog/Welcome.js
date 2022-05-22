@@ -1,10 +1,7 @@
 import React, { useState } from "react";
-import Sidebar from '../../components/welcome/Sidebar';
 import Footer from '../../components/Footer';
 import Posts from "../../components/welcome/Posts.js";
 import usePersistedState from "../../custom/PersistedState";
-import database, { auth } from "../../firebase";
-import { signOut } from "@firebase/auth";
 import PostCreator from "./editor/PostCreator";
 import AppNavbar from "../../components/nav/AppNavbar";
 

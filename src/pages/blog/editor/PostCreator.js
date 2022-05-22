@@ -27,7 +27,7 @@ function PostCreator() {
 			visibility: "private",
 			date: Date.now(),
 		});
-		window.location.href = "/editor/" + uuid;
+		window.location.href = "/blog/editor/" + uuid;
 		
 	};
 

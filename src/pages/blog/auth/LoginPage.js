@@ -41,7 +41,7 @@ function LoginPage() {
 						</div>
 					</button>
 
-					<p className="mt-8">Need an account? <a href="/register" className="font-semibold text-blue-500 hover:text-blue-700">Create an account</a></p>
+					<p className="mt-8">Need an account? <a href="/blog/register" className="font-semibold text-blue-500 hover:text-blue-700">Create an account</a></p>
 
 
 				</div>
