@@ -1,12 +1,12 @@
 import './App.css';
 import React, { useState } from "react";
-import Welcome from "./pages/blog/Welcome";
-import LoginPage from "./pages/blog/auth/LoginPage";
-import PostEditor from "./pages/blog/editor/PostEditor";
-import PostView from "./pages/blog/posts/PostView";
-import FrontPage from './pages/welcome/FrontPage';
+import Welcome from "./cms/pages/landing/Welcome";
+import SignInPage from './auth/SignInPage';
+import PostEditor from "./cms/editor/PostEditor";
+import PostView from "./cms/pages/posts/PostView";
+import FrontPage from './vendor/welcome/FrontPage';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Error404 from './pages/error-404';
+import Error404 from './cms/pages/error-404';
 
 function App() {
 	return (
@@ -17,7 +17,7 @@ function App() {
 					<Route index element={<FrontPage />} />
 					<Route path="blog">
 						<Route index element={<Welcome />} />
-						<Route path="login" element={<LoginPage/>} />
+						<Route path="login" element={<SignInPage/>} />
 						<Route path="editor/:uuid" element={<PostEditor />}/>
 						<Route path="posts/:slug" element={<PostView />}/>
 					</Route>

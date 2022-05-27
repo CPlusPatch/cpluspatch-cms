@@ -1,21 +1,18 @@
 // Adds a post editor based on EditorJS that creates new posts and saves them to the Firestore database
 import React, { useState, useEffect } from 'react';
-import database from "../../../firebase";
-import { doc, getDoc, setDoc, collection } from "firebase/firestore";
+import firebase from "../../utils/firebase";
 import PropTypes from "prop-types"
 import slugify from 'slugify';
 import {v4 as uuidv4} from 'uuid';
-import usePersistedState from "../../../custom/PersistedState";
 
 function PostCreator() {
-	const [userLoggedIn, setUserLoggedIn] = usePersistedState("user", {});
+	const userLoggedIn = firebase.getUser();
  
 	const handleSubmit = async () => {
 		const slug = (Math.floor(Math.random() * (9999999999 - 1000000000 + 1)) + 1000000000).toString() + "-" + slugify("New post").toLowerCase();
 		const uuid = uuidv4();
 		
-		const userData = await getDoc(doc(database, 'users', userLoggedIn.uid));
-		await setDoc(doc(collection(database, 'posts')), {
+		const post = {
 			author: userLoggedIn.uid,
 			"banner-url": "",
 			blocks: '{"time":1649917379711,"blocks":[],"version":"2.23.2"}',
@@ -26,7 +23,8 @@ function PostCreator() {
 			uuid: uuid,
 			visibility: "private",
 			date: Date.now(),
-		});
+		}
+		await firebase.addPost(post);
 		window.location.href = "/blog/editor/" + uuid;
 		
 	};

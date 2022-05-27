@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import database from "../../firebase";
-import { doc, getDoc, query, onSnapshot, collection, where, orderBy } from "firebase/firestore";
-import PropTypes from "prop-types"
-import usePersistedState from '../../custom/PersistedState';
+import firebase from "../../../utils/firebase.js";
+import PropTypes from "prop-types";
+import { where } from "@firebase/firestore";
 
 function PostCard(props) {
 	const [data, setData] = useState({});
@@ -10,7 +9,7 @@ function PostCard(props) {
 	useEffect(() => {
 		async function fetchUserData() {
 			const author = props.author;
-			const userData = (await getDoc(doc(database, 'users', author))).data();
+			const userData = await firebase.getUserData(author);
 			setData(userData);
 		}
 		fetchUserData();
@@ -54,6 +53,36 @@ function PostCard(props) {
 	</article>
 	);
 }
+
+function PostCardSkeleton() {
+	return (
+		<article>
+		<div className="space-y-2 xl:grid xl:grid-cols-4 xl:items-baseline xl:space-y-0 animate-pulse">
+			<span className="h-6 bg-gray-300 rounded-md w-36">
+			</span>
+			<div className="space-y-5 xl:col-span-3">
+				<div className="space-y-3">
+					<div>
+						<div className="w-48 h-6 bg-gray-300 rounded-md">
+						</div>
+								
+						<div className="flex flex-wrap mt-2">
+							<div className="h-6 mr-3 bg-gray-300 rounded-md w-28"></div>
+							<div className="h-6 mr-3 bg-gray-300 rounded-md w-28"></div>
+							<div className="h-6 mr-3 bg-gray-300 rounded-md w-28"></div>
+						</div>
+					</div>
+					<div className="w-full h-6 bg-gray-300 rounded-md"></div>
+					<div className="w-full h-6 bg-gray-300 rounded-md"></div>
+					<div className="w-1/2 h-6 bg-gray-300 rounded-md"></div>
+				</div>
+				<div className="h-6 bg-gray-300 rounded-md w-36"></div>
+			</div>
+		</div>
+	</article>
+	);
+}
+
 PostCard.propTypes = {
 	title: PropTypes.string.isRequired,
 	desc: PropTypes.string.isRequired,
@@ -65,48 +94,52 @@ PostCard.propTypes = {
 
 function Posts() {
 	const [posts, setPosts] = useState([]);
-	const [userLoggedIn, setUserLoggedIn] = usePersistedState("user", {});
 	const [userData, setUserData] = useState({role: "default"});
 
 	useEffect(() => {
 		async function fetchUserDataAndPosts() {
+			const userLoggedIn = await firebase.getUser();
 			var tmpUserRole = "default;" // For some reason useState doesn't work here
-			if (typeof userLoggedIn.uid != "undefined") {
-				const data = (await getDoc(doc(database, 'users', userLoggedIn.uid))).data();
+			if (userLoggedIn != false) {
+				const data = await firebase.getUserData(userLoggedIn.uid);
 				tmpUserRole = data.role;
 				setUserData({role: data.role});
 			}
 			var whereData = where('visibility', '==', "public"); // Default value if signed out
 			if (tmpUserRole == "user") whereData = where('visibility', "in", ["public", "restricted"]);
 			if (tmpUserRole == "admin") whereData = where('visibility', "in", ["public", "restricted", "private"]);
-			const q = query(collection(database, 'posts'), whereData, orderBy("date", "desc"));
-			onSnapshot(q, (querySnapshot) => {
-				setPosts(querySnapshot.docs.map(doc => ({
-					id: doc.id,
-					data: doc.data()
-				})))
-			})
+			setPosts(await firebase.getPosts(whereData));
 		}
 		fetchUserDataAndPosts();
     }, []);
 
 	return (
-		<ul className="divide-y divide-gray-200 dark:divide-gray-700">	
+		<ul className="divide-y divide-gray-200 dark:divide-gray-700">
+			{posts.length == 0 ?
+			<>
+				<li className="py-12">
+					<PostCardSkeleton/>
+				</li>
+				<li className="py-12">
+					<PostCardSkeleton/>
+				</li>
+			</>
+			: null}
 			{posts.map(post => {
-					return (
-					<li className="py-12" key={post.id}>
-						<PostCard
-							id={post.id}
-							desc={post.data.description}
-							title={post.data.title}
-							author={post.data.author}
-							uuid={post.data.uuid}
-							slug={post.data.slug}
-							role={userData.role}
-						/>
-					</li>
-					);
-				})}
+				return (
+				<li className="py-12" key={post.id}>
+					<PostCard
+						id={post.id}
+						desc={post.data.description}
+						title={post.data.title}
+						author={post.data.author}
+						uuid={post.data.uuid}
+						slug={post.data.slug}
+						role={userData.role}
+					/>
+				</li>
+				);
+			})}
 		</ul>
 	);
 }

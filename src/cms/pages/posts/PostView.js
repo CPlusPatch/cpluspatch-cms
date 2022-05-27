@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
-import database from "../../../firebase";
-import usePersistedState from "../../../custom/PersistedState";
+import firebase from "../../../utils/firebase";
 import Blocks from 'editorjs-blocks-react-renderer';
-import AppNavbar from "../../../components/nav/AppNavbar";
+import AppNavbar from "../navbar/AppNavbar";
 
 
 function PostView() {
 	const { slug } = useParams();
-	const [userLoggedIn, setUserLoggedIn] = usePersistedState("user", {});
 	const [postData, setPostData] = useState({
 		id: "",
 		data: {
@@ -23,11 +21,8 @@ function PostView() {
 	
 	useEffect(() => {
 		async function fetchPostData() {
-			const q = query(collection(database, "posts"), where("visibility", "==", "public"), where("slug", "==", slug));
-			const querySnapshot = await getDocs(q);
-			await querySnapshot.forEach((doc) => {
-				setPostData({id: doc.id, data: doc.data()});
-			});
+			const post = (await firebase.getPostByFields(where("visibility", "==", "public"), where("slug", "==", slug)))[0];
+			setPostData({id: post.id, data: post.data});
 		}
 		fetchPostData();
 	}, []);

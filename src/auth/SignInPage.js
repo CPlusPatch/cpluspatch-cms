@@ -1,9 +1,7 @@
 import React from "react";
-import usePersistedState from "../../../custom/PersistedState";
-import database, { auth } from "../../../firebase";
-import { signInWithEmailAndPassword } from "@firebase/auth";
+import firebase from "../utils/firebase";
 
-function LoginPage() {
+function SignInPage() {
 	return (
 		<section className="flex flex-col items-center h-screen md:flex-row">
 			<div className="hidden w-full h-screen bg-indigo-600 lg:block md:w-1/2 xl:w-2/3">
@@ -52,27 +50,19 @@ function LoginPage() {
 }
 
 function FullwidthLoginForm() {
-	const [userLoggedIn, setUserLoggedIn] = usePersistedState("user", {});
-
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 		
 		const email = e.target.email.value;
 		const password = e.target.password.value;
 
-		signInWithEmailAndPassword(auth, email, password)
-			.then((userCredential) => {
-				const user = userCredential.user;
-				setUserLoggedIn(user);
-				alert("Logged in successfully");
-				// Navigate to home after login
-				window.location.pathname = "/";
-			})
-			.catch((error) => {
-				const errorCode = error.code;
-				alert(errorCode);
-				console.log(error);
-			});
+		let user = await firebase.logIn(email, password)
+		if(user) {
+			window.location.pathname = "/blog";
+			console.log("Logged in")
+		} else {
+			alert("Invalid email or password");
+		}
 	}
 	return (
 		<form className="mt-6" action="#" method="POST" onSubmit={handleSubmit}>
@@ -96,4 +86,4 @@ function FullwidthLoginForm() {
 	);
 }
 
-export default LoginPage;
+export default SignInPage;

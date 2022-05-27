@@ -1,10 +1,8 @@
 import React from "react";
-import usePersistedState from "../../custom/PersistedState";
-import database, { auth } from "../../firebase";
-import { signOut } from "@firebase/auth";
+import firebase from "../../../utils/firebase.js";
 		
 function AppNavbar() {
-	const [userLoggedIn, setUserLoggedIn] = usePersistedState("user", {});
+	const userLoggedIn = firebase.isUserLoggedIn();
 
 	return (
 		<header className="flex items-center justify-between py-10">
@@ -50,7 +48,7 @@ function AppNavbar() {
 			<div className="flex items-center text-base leading-5">
 				<div className="block">
 					<a className="p-1 font-medium text-gray-900 dark:text-gray-100 sm:p-4" href="/">Blog</a>
-					{JSON.stringify(userLoggedIn) == "{}" ? <SignInButton/> : <SignOutButton/>}
+					{userLoggedIn ? <SignOutButton/> : <SignInButton/>}
 				</div>
 			</div>
 		</header>
@@ -58,17 +56,11 @@ function AppNavbar() {
 }
 
 function SignOutButton() {
-	const [userLoggedIn, setUserLoggedIn] = usePersistedState("user", {});
+	const userLoggedIn = firebase.isUserLoggedIn();
 
-	const handleSignOut = () => {
-		signOut(auth)
-			.then(() => {
-				setUserLoggedIn({});
-				window.location.pathname = "/";
-			})
-			.catch((error) => {
-				console.log(error);
-			});
+	const handleSignOut = async () => {
+		await firebase.signOut();
+		window.location.pathname = "/blog"
 	};
 	return userLoggedIn && (
 		<button onClick={handleSignOut} type="button" className="p-1 font-medium text-gray-900 dark:text-gray-100 sm:p-4">Sign out</button>

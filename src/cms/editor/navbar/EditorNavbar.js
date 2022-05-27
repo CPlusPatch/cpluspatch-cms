@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types"
-import EditorNavbarDropdown from "../../../components/editor/EditorNavbarDropdown";
-import EditorNavbarDropdownItem from "../../../components/editor/EditorNavbarDropdownItem";
+import EditorNavbarDropdown from "./EditorNavbarDropdown";
+import EditorNavbarDropdownItem from "./EditorNavbarDropdownItem";
 
 function EditorNavbar(props) {
 	return (
@@ -14,7 +14,7 @@ function EditorNavbar(props) {
 				<div className="ml-2">
 					<EditorNavbarDropdown text="File">
 						<div className="py-1" role="none">
-							<EditorNavbarDropdownItem onclick={() => {window.location.pathname = "/";}}>Go to <b>home</b></EditorNavbarDropdownItem>
+							<EditorNavbarDropdownItem onclick={() => {window.location.pathname = "/blog";}}>Go to <b>home</b></EditorNavbarDropdownItem>
 						</div>
 						<div className="py-1" role="none">
 							<EditorNavbarDropdownItem onclick={props.openSettingsModal}>Post settings</EditorNavbarDropdownItem>
