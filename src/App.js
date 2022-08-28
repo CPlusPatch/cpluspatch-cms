@@ -7,6 +7,7 @@ import PostView from "./cms/pages/posts/PostView";
 import FrontPage from './vendor/welcome/FrontPage';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Error404 from './cms/pages/error-404';
+import SiteSettings from './cms/settings/SiteSettings';
 
 function App() {
 	return (
@@ -20,6 +21,9 @@ function App() {
 						<Route path="login" element={<SignInPage/>} />
 						<Route path="editor/:uuid" element={<PostEditor />}/>
 						<Route path="posts/:slug" element={<PostView />}/>
+					</Route>
+					<Route path="dashboard">
+						<Route index element={<SiteSettings />} />
 					</Route>
 				</Route>
 			</Routes>

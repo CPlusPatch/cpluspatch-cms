@@ -60,6 +60,9 @@ export default {
 		await auth.signOut();
 		return persistedState.setState("user", {});
 	},
+	getUsers: async () => {
+		return (await getDocs(query(collection(db, 'users')))).docs.map(doc => doc.data());
+	},
 	logIn: async (email, password) => {
 		try {
 			var user = await signInWithEmailAndPassword(auth, email, password);
